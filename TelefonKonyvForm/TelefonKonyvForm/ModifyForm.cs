@@ -7,85 +7,122 @@ namespace TelefonKonyvForm
 {
     public partial class ModifyForm : Form
     {
+        private Person currentPerson;
         public ModifyForm()
         {
             InitializeComponent();
         }
 
-        private void btnModify_Click_Click(object sender, EventArgs e)
+
+
+        private void btnModify_Click(object sender, EventArgs e)
+        {
+            if (currentPerson == null)
+            {
+                MessageBox.Show("Please search for a record first.");
+                return;
+            }
+
+            List<Person> people = new List<Person>();
+
+            // Read all records
+            using (StreamReader reader = new StreamReader("project.dat"))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string[] parts = line.Split(',');
+                    if (parts.Length == 8)
+                    {
+                        Person p = new Person
+                        {
+                            Name = parts[0],
+                            Address = parts[1],
+                            FatherName = parts[2],
+                            MotherName = parts[3],
+                            MobileNo = Int64.TryParse(parts[4], out long mobileNo) ? mobileNo : 0,
+                            Sex = parts[5],
+                            Mail = parts[6],
+                            CitizenNo = parts[7]
+                        };
+
+                        if (p.Name.Equals(currentPerson.Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            p.Name = txtName.Text;
+                            p.Address = txtAddress.Text;
+                            p.FatherName = txtFatherName.Text;
+                            p.MotherName = txtMotherName.Text;
+                            p.MobileNo = Int64.TryParse(txtMobileNo.Text, out long newMobileNo) ? newMobileNo : 0;
+                            p.Sex = txtSex.Text;
+                            p.Mail = txtMail.Text;
+                            p.CitizenNo = txtCitizenNo.Text;
+                        }
+
+                        people.Add(p);
+                    }
+                }
+            }
+
+            // Write updated records
+            using (StreamWriter writer = new StreamWriter("project.dat"))
+            {
+                foreach (var p in people)
+                {
+                    writer.WriteLine($"{p.Name},{p.Address},{p.FatherName},{p.MotherName},{p.MobileNo},{p.Sex},{p.Mail},{p.CitizenNo}");
+                }
+            }
+
+            MessageBox.Show("Record updated successfully");
+            this.Close();
+        }
+
+        private void btnSearch_Click_1(object sender, EventArgs e)
         {
             string nameToSearch = txtSearchName.Text;
             bool recordFound = false;
 
-            List<Person> updatedRecords = new List<Person>();
-
-            using (FileStream fs = new FileStream("project.dat", FileMode.OpenOrCreate))
-            using (BinaryReader reader = new BinaryReader(fs))
-            using (FileStream tempFs = new FileStream("temp.dat", FileMode.Create))
-            using (BinaryWriter writer = new BinaryWriter(tempFs))
+            using (StreamReader reader = new StreamReader("project.dat"))
             {
-                while (fs.Position < fs.Length)
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    Person p = new Person();
-                    p.Name = reader.ReadString();
-                    p.Address = reader.ReadString();
-                    p.FatherName = reader.ReadString();
-                    p.MotherName = reader.ReadString();
-                    p.MobileNo = reader.ReadInt64();
-                    p.Sex = reader.ReadString();
-                    p.Mail = reader.ReadString();
-                    p.CitizenNo = reader.ReadString();
-
-                    if (p.Name.Equals(nameToSearch, StringComparison.OrdinalIgnoreCase))
+                    string[] parts = line.Split(',');
+                    if (parts.Length == 8)
                     {
-                        // Update fields from textboxes
-                        p.Name = txtName.Text;
-                        p.Address = txtAddress.Text;
-                        p.FatherName = txtFatherName.Text;
-                        p.MotherName = txtMotherName.Text;
-                        p.MobileNo = Int64.Parse(txtMobileNo.Text);
-                        p.Sex = txtSex.Text;
-                        p.Mail = txtMail.Text;
-                        p.CitizenNo = txtCitizenNo.Text;
+                        Person p = new Person
+                        {
+                            Name = parts[0],
+                            Address = parts[1],
+                            FatherName = parts[2],
+                            MotherName = parts[3],
+                            MobileNo = Int64.TryParse(parts[4], out long mobileNo) ? mobileNo : 0,
+                            Sex = parts[5],
+                            Mail = parts[6],
+                            CitizenNo = parts[7]
+                        };
 
-                        recordFound = true;
+                        if (p.Name.Equals(nameToSearch, StringComparison.OrdinalIgnoreCase))
+                        {
+                            currentPerson = p;
+                            txtName.Text = p.Name;
+                            txtAddress.Text = p.Address;
+                            txtFatherName.Text = p.FatherName;
+                            txtMotherName.Text = p.MotherName;
+                            txtMobileNo.Text = p.MobileNo.ToString();
+                            txtSex.Text = p.Sex;
+                            txtMail.Text = p.Mail;
+                            txtCitizenNo.Text = p.CitizenNo;
+                            recordFound = true;
+                            break;
+                        }
                     }
-
-                    updatedRecords.Add(p);
-                }
-                fs.Seek(0, SeekOrigin.Begin);
-            }
-
-            // Rewrite the original file with updated records from the list
-            using (FileStream fs = new FileStream("project.dat", FileMode.Create))
-            using (BinaryWriter writer = new BinaryWriter(fs))
-            {
-                foreach (Person person in updatedRecords)
-                {
-                    writer.Write(person.Name);
-                    writer.Write(person.Address);
-                    writer.Write(person.FatherName);
-                    writer.Write(person.MotherName);
-                    writer.Write(person.MobileNo);
-                    writer.Write(person.Sex);
-                    writer.Write(person.Mail);
-                    writer.Write(person.CitizenNo);
                 }
             }
 
-            // Delete temporary file
-            File.Delete("temp.dat");
-
-            if (recordFound)
-            {
-                MessageBox.Show("Record updated successfully");
-            }
-            else
+            if (!recordFound)
             {
                 MessageBox.Show("Record not found");
             }
-
-            this.Close();
         }
     }
 }

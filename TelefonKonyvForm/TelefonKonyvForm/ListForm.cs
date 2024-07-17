@@ -20,23 +20,25 @@ namespace TelefonKonyvForm
         }
         private void LoadRecords()
         {
-            Person p;
             using (StreamReader reader = new StreamReader("project.dat"))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
                     string[] parts = line.Split(',');
-                    if (parts.Length == 8) // Ensure all fields are present
+                    if (parts.Length == 8)
                     {
-                        p.Name = parts[0];
-                        p.Address = parts[1];
-                        p.FatherName = parts[2];
-                        p.MotherName = parts[3];
-                        p.MobileNo = Int64.Parse(parts[4]);
-                        p.Sex = parts[5];
-                        p.Mail = parts[6];
-                        p.CitizenNo = parts[7];
+                        Person p = new Person
+                        {
+                            Name = parts[0],
+                            Address = parts[1],
+                            FatherName = parts[2],
+                            MotherName = parts[3],
+                            MobileNo = Int64.Parse(parts[4]),
+                            Sex = parts[5],
+                            Mail = parts[6],
+                            CitizenNo = parts[7]
+                        };
 
                         lstRecords.Items.Add($"Name: {p.Name}, Address: {p.Address}, Phone: {p.MobileNo}");
                     }
@@ -47,8 +49,6 @@ namespace TelefonKonyvForm
                     }
                 }
             }
-
-
         }
 
     }

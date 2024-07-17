@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace TelefonKonyvForm
 {
-    public struct Person
+    public class Person
     {
-        public string Name;
-        public string Address;
-        public string FatherName;
-        public string MotherName;
-        public long MobileNo;
-        public string Sex;
-        public string Mail;
-        public string CitizenNo;
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string FatherName { get; set; }
+        public string MotherName { get; set; }
+        public long MobileNo { get; set; }
+        public string Sex { get; set; }
+        public string Mail { get; set; }
+        public string CitizenNo { get; set; }
     }
+
 }

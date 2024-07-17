@@ -20,38 +20,44 @@ namespace TelefonKonyvForm
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-
-            Person p = new Person();
             string name = txtSearchName.Text;
             bool recordFound = false;
 
-            using (FileStream fs = new FileStream("project.dat", FileMode.OpenOrCreate))
-            using (BinaryReader reader = new BinaryReader(fs))
+            using (StreamReader reader = new StreamReader("project.dat"))
             {
-                while (fs.Position < fs.Length)
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    p.Name = reader.ReadString();
-                    p.Address = reader.ReadString();
-                    p.FatherName = reader.ReadString();
-                    p.MotherName = reader.ReadString();
-                    p.MobileNo = reader.ReadInt64();
-                    p.Sex = reader.ReadString();
-                    p.Mail = reader.ReadString();
-                    p.CitizenNo = reader.ReadString();
-
-                    if (p.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                    string[] parts = line.Split(',');
+                    if (parts.Length == 8)
                     {
-                        lblResult.Text = $"Name: {p.Name}\nAddress: {p.Address}\nFather's Name: {p.FatherName}\nMother's Name: {p.MotherName}\nMobile No: {p.MobileNo}\nSex: {p.Sex}\nEmail: {p.Mail}\nCitizen No: {p.CitizenNo}";
-                        recordFound = true;
-                        break;
+                        Person p = new Person
+                        {
+                            Name = parts[0],
+                            Address = parts[1],
+                            FatherName = parts[2],
+                            MotherName = parts[3],
+                            MobileNo = Int64.Parse(parts[4]),
+                            Sex = parts[5],
+                            Mail = parts[6],
+                            CitizenNo = parts[7]
+                        };
+
+                        if (p.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            lblResult.Text = $"Name: {p.Name}\nAddress: {p.Address}\nFather's Name: {p.FatherName}\nMother's Name: {p.MotherName}\nMobile No: {p.MobileNo}\nSex: {p.Sex}\nEmail: {p.Mail}\nCitizen No: {p.CitizenNo}";
+                            recordFound = true;
+                            break;
+                        }
                     }
                 }
+            }
 
-                if (!recordFound)
-                {
-                    lblResult.Text = "Record not found";
-                }
+            if (!recordFound)
+            {
+                lblResult.Text = "Record not found";
             }
         }
     }
 }
+

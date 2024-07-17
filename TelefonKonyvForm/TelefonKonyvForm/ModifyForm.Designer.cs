@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnModify_Click = new System.Windows.Forms.Button();
             this.SearchName = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
             this.txtAddress = new System.Windows.Forms.TextBox();
@@ -47,17 +46,9 @@
             this.FatherName = new System.Windows.Forms.Label();
             this.Address = new System.Windows.Forms.Label();
             this.Name = new System.Windows.Forms.Label();
+            this.btnModify = new System.Windows.Forms.Button();
+            this.btnSearch = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // btnModify_Click
-            // 
-            this.btnModify_Click.Location = new System.Drawing.Point(133, 366);
-            this.btnModify_Click.Name = "btnModify_Click";
-            this.btnModify_Click.Size = new System.Drawing.Size(75, 23);
-            this.btnModify_Click.TabIndex = 0;
-            this.btnModify_Click.Text = "Save";
-            this.btnModify_Click.UseVisualStyleBackColor = true;
-            this.btnModify_Click.Click += new System.EventHandler(this.btnModify_Click_Click);
             // 
             // SearchName
             // 
@@ -203,11 +194,33 @@
             this.Name.TabIndex = 34;
             this.Name.Text = "Név:";
             // 
+            // btnModify
+            // 
+            this.btnModify.Location = new System.Drawing.Point(294, 73);
+            this.btnModify.Name = "btnModify";
+            this.btnModify.Size = new System.Drawing.Size(75, 23);
+            this.btnModify.TabIndex = 42;
+            this.btnModify.Text = "Módosítás";
+            this.btnModify.UseVisualStyleBackColor = true;
+            this.btnModify.Click += new System.EventHandler(this.btnModify_Click);
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.Location = new System.Drawing.Point(398, 73);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(75, 23);
+            this.btnSearch.TabIndex = 43;
+            this.btnSearch.Text = "Keresés";
+            this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click_1);
+            // 
             // ModifyForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(551, 417);
+            this.Controls.Add(this.btnSearch);
+            this.Controls.Add(this.btnModify);
             this.Controls.Add(this.CitizenNo);
             this.Controls.Add(this.Mail);
             this.Controls.Add(this.Sex);
@@ -226,7 +239,6 @@
             this.Controls.Add(this.txtMail);
             this.Controls.Add(this.txtCitizenNo);
             this.Controls.Add(this.SearchName);
-            this.Controls.Add(this.btnModify_Click);
             this.Text = "ModifyForm";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -235,7 +247,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnModify_Click;
         private System.Windows.Forms.Label SearchName;
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.TextBox txtAddress;
@@ -254,5 +265,7 @@
         private System.Windows.Forms.Label FatherName;
         private System.Windows.Forms.Label Address;
         private System.Windows.Forms.Label Name;
+        private System.Windows.Forms.Button btnModify;
+        private System.Windows.Forms.Button btnSearch;
     }
 }

@@ -18,59 +18,68 @@ namespace TelefonKonyvForm
             InitializeComponent();
         }
 
+
+
         private void btnDelete_Click_1(object sender, EventArgs e)
         {
-            Person p = new Person();
             bool flag = false;
             string name = DeleteName.Text;
+            List<Person> people = new List<Person>();
 
-            using (FileStream fs = new FileStream("project.dat", FileMode.OpenOrCreate))
-            using (BinaryReader reader = new BinaryReader(fs))
-            using (FileStream tempFs = new FileStream("temp.dat", FileMode.Create))
-            using (BinaryWriter writer = new BinaryWriter(tempFs))
+            // Read all records
+            using (StreamReader reader = new StreamReader("project.dat"))
             {
-                while (fs.Position < fs.Length)
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    p.Name = reader.ReadString();
-                    p.Address = reader.ReadString();
-                    p.FatherName = reader.ReadString();
-                    p.MotherName = reader.ReadString();
-                    p.MobileNo = reader.ReadInt64();
-                    p.Sex = reader.ReadString();
-                    p.Mail = reader.ReadString();
-                    p.CitizenNo = reader.ReadString();
-
-                    if (!p.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                    string[] parts = line.Split(',');
+                    if (parts.Length == 8)
                     {
-                        writer.Write(p.Name);
-                        writer.Write(p.Address);
-                        writer.Write(p.FatherName);
-                        writer.Write(p.MotherName);
-                        writer.Write(p.MobileNo);
-                        writer.Write(p.Sex);
-                        writer.Write(p.Mail);
-                        writer.Write(p.CitizenNo);
+                        Person p = new Person
+                        {
+                            Name = parts[0],
+                            Address = parts[1],
+                            FatherName = parts[2],
+                            MotherName = parts[3],
+                            MobileNo = Int64.Parse(parts[4]),
+                            Sex = parts[5],
+                            Mail = parts[6],
+                            CitizenNo = parts[7]
+                        };
+                        if (!p.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            people.Add(p);
+                        }
+                        else
+                        {
+                            flag = true;
+                        }
                     }
-                    else
-                    {
-                        flag = true;
-                    }
+                }
+            }
+            // Write remaining records
+            using (StreamWriter writer = new StreamWriter("project.dat"))
+            {
+                foreach (var p in people)
+                {
+                    writer.WriteLine($"{p.Name},{p.Address},{p.FatherName},{p.MotherName},{p.MobileNo},{p.Sex},{p.Mail},{p.CitizenNo}");
                 }
             }
 
             if (flag)
             {
-                File.Delete("project.dat");
-                File.Move("temp.dat", "project.dat");
                 MessageBox.Show("Record deleted successfully");
             }
             else
             {
                 MessageBox.Show("No contact's record to delete.");
-                File.Delete("temp.dat");
             }
 
             this.Close();
         }
+
+
     }
+
+    
 }
